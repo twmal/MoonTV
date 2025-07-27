@@ -45,6 +45,25 @@ function SearchPageClient() {
     return getDefaultAggregate() ? 'agg' : 'all';
   });
 
+  // 動態更新搜尋頁面標題
+  useEffect(() => {
+    const updatePageTitle = () => {
+      const query = searchParams.get('q');
+      if (query) {
+        // 處理搜尋關鍵字長度
+        const maxQueryLength = 30;
+        const truncatedQuery = query.length > maxQueryLength
+          ? `${query.substring(0, maxQueryLength)}...`
+          : query;
+        document.title = `搜尋: ${truncatedQuery} | MoonTV`;
+      } else {
+        document.title = '搜尋 | MoonTV';
+      }
+    };
+
+    updatePageTitle();
+  }, [searchParams]);
+
   // 聚合后的结果（按标题和年份分组）
   const aggregatedResults = useMemo(() => {
     const map = new Map<string, SearchResult[]>();

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoonTV 動態標題測試</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #22c55e;
+        }
+        .test-link {
+            display: inline-block;
+            background: #22c55e;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px 10px 5px 0;
+            transition: background 0.3s;
+        }
+        .test-link:hover {
+            background: #16a34a;
+        }
+        .expected-title {
+            background: #e5f3ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.implemented {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎬 MoonTV 動態頁面標題測試</h1>
+    
+    <div class="instructions">
+        <h3>📋 測試說明</h3>
+        <p>點擊下方連結測試各頁面的動態標題功能。請注意觀察瀏覽器標籤頁的標題變化。</p>
+        <p><strong>注意：</strong>請確保 MoonTV 開發伺服器正在 <code>http://localhost:3000</code> 運行。</p>
+    </div>
+
+    <div class="test-section">
+        <h2>🏠 首頁標題測試 <span class="status implemented">✅ 已實現</span></h2>
+        <p>測試首頁和收藏頁面的標題切換</p>
+        <a href="http://localhost:3000/" target="_blank" class="test-link">首頁</a>
+        <div class="expected-title">
+            <strong>預期標題：</strong>
+            <br>• 首頁標籤：MoonTV - 影視聚合
+            <br>• 收藏標籤：我的收藏 | MoonTV
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 搜尋頁面標題測試 <span class="status implemented">✅ 已實現</span></h2>
+        <p>測試搜尋頁面的動態標題功能</p>
+        <a href="http://localhost:3000/search" target="_blank" class="test-link">搜尋頁面</a>
+        <a href="http://localhost:3000/search?q=復仇者聯盟" target="_blank" class="test-link">搜尋：復仇者聯盟</a>
+        <a href="http://localhost:3000/search?q=鋼鐵人" target="_blank" class="test-link">搜尋：鋼鐵人</a>
+        <div class="expected-title">
+            <strong>預期標題：</strong>
+            <br>• 無搜尋：搜尋 | MoonTV
+            <br>• 有搜尋：搜尋: 關鍵字 | MoonTV
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎭 豆瓣頁面標題測試 <span class="status implemented">✅ 已實現</span></h2>
+        <p>測試不同類型內容頁面的標題</p>
+        <a href="http://localhost:3000/douban?type=movie" target="_blank" class="test-link">電影</a>
+        <a href="http://localhost:3000/douban?type=tv" target="_blank" class="test-link">電視劇</a>
+        <a href="http://localhost:3000/douban?type=show" target="_blank" class="test-link">綜藝</a>
+        <div class="expected-title">
+            <strong>預期標題：</strong>
+            <br>• 電影頁面：電影 | MoonTV
+            <br>• 電視劇頁面：電視劇 | MoonTV
+            <br>• 綜藝頁面：綜藝 | MoonTV
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎬 播放頁面標題測試 <span class="status implemented">✅ 已實現</span></h2>
+        <p>測試影片播放頁面的動態標題功能</p>
+        <p><strong>注意：</strong>播放頁面需要有效的影片參數，請通過搜尋功能進入播放頁面進行測試。</p>
+        <div class="expected-title">
+            <strong>預期標題：</strong>
+            <br>• 單集影片：影片標題 | MoonTV
+            <br>• 多集影片：影片標題 - 第X集 | MoonTV
+            <br>• 載入中：MoonTV
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>🧪 測試步驟</h2>
+        <ol>
+            <li><strong>開啟多個標籤頁：</strong>同時開啟多個不同的 MoonTV 頁面</li>
+            <li><strong>觀察標題變化：</strong>注意每個標籤頁的標題是否正確顯示</li>
+            <li><strong>測試搜尋功能：</strong>在搜尋頁面輸入關鍵字，觀察標題變化</li>
+            <li><strong>測試播放功能：</strong>播放影片，觀察標題是否包含影片名稱</li>
+            <li><strong>測試集數切換：</strong>對於多集影片，切換集數觀察標題變化</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>✅ 驗證清單</h2>
+        <ul>
+            <li>□ 首頁標題正確顯示</li>
+            <li>□ 搜尋頁面標題包含搜尋關鍵字</li>
+            <li>□ 豆瓣頁面標題根據類型變化</li>
+            <li>□ 播放頁面標題包含影片名稱</li>
+            <li>□ 多集影片標題包含集數資訊</li>
+            <li>□ 長標題正確截斷</li>
+            <li>□ 標題即時更新</li>
+            <li>□ 多標籤頁可以區分內容</li>
+        </ul>
+    </div>
+
+    <script>
+        // 簡單的標題監控腳本
+        let lastTitle = document.title;
+        setInterval(() => {
+            if (document.title !== lastTitle) {
+                console.log('標題變化:', lastTitle, '->', document.title);
+                lastTitle = document.title;
+            }
+        }, 1000);
+        
+        // 顯示當前標題
+        document.addEventListener('DOMContentLoaded', () => {
+            const titleDisplay = document.createElement('div');
+            titleDisplay.style.cssText = `
+                position: fixed;
+                top: 10px;
+                right: 10px;
+                background: #333;
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                font-family: monospace;
+                font-size: 12px;
+                z-index: 1000;
+                max-width: 300px;
+                word-break: break-all;
+            `;
+            titleDisplay.innerHTML = `<strong>當前標題：</strong><br>${document.title}`;
+            document.body.appendChild(titleDisplay);
+            
+            setInterval(() => {
+                titleDisplay.innerHTML = `<strong>當前標題：</strong><br>${document.title}`;
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

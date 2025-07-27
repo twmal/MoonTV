@@ -62,6 +62,33 @@ function PlayPageClient() {
     blockAdEnabledRef.current = blockAdEnabled;
   }, [blockAdEnabled]);
 
+  // 動態更新頁面標題
+  useEffect(() => {
+    const updatePageTitle = () => {
+      let title = 'MoonTV'; // 預設標題
+
+      if (videoTitle) {
+        // 處理標題長度，避免過長
+        const maxTitleLength = 50;
+        const truncatedTitle = videoTitle.length > maxTitleLength
+          ? `${videoTitle.substring(0, maxTitleLength)}...`
+          : videoTitle;
+
+        // 如果是多集影片，顯示集數資訊
+        if (totalEpisodes > 1) {
+          title = `${truncatedTitle} - 第${currentEpisodeIndex + 1}集 | MoonTV`;
+        } else {
+          title = `${truncatedTitle} | MoonTV`;
+        }
+      }
+
+      // 更新瀏覽器標籤標題
+      document.title = title;
+    };
+
+    updatePageTitle();
+  }, [videoTitle, currentEpisodeIndex, totalEpisodes]);
+
   // 视频基本信息
   const [videoTitle, setVideoTitle] = useState(searchParams.get('title') || '');
   const [videoYear, setVideoYear] = useState(searchParams.get('year') || '');
