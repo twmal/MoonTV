@@ -44,6 +44,7 @@ function DoubanPageClient() {
     if (type === 'show') return 'show';
     return '全部';
   });
+  const [yearSelection, setYearSelection] = useState<string>('');
 
   // 获取自定义分类数据
   useEffect(() => {
@@ -131,6 +132,7 @@ function DoubanPageClient() {
           kind: 'tv' as const,
           category: type,
           type: secondarySelection,
+          year: yearSelection || undefined,
           pageLimit: 25,
           pageStart,
         };
@@ -141,11 +143,12 @@ function DoubanPageClient() {
         kind: type as 'tv' | 'movie',
         category: primarySelection,
         type: secondarySelection,
+        year: yearSelection || undefined,
         pageLimit: 25,
         pageStart,
       };
     },
-    [type, primarySelection, secondarySelection]
+    [type, primarySelection, secondarySelection, yearSelection]
   );
 
   // 防抖的数据加载函数
@@ -189,6 +192,7 @@ function DoubanPageClient() {
     type,
     primarySelection,
     secondarySelection,
+    yearSelection,
     getRequestParams,
     customCategories,
   ]);
@@ -227,6 +231,7 @@ function DoubanPageClient() {
     type,
     primarySelection,
     secondarySelection,
+    yearSelection,
     loadInitialData,
   ]);
 
@@ -402,8 +407,10 @@ function DoubanPageClient() {
                 type={type as 'movie' | 'tv' | 'show'}
                 primarySelection={primarySelection}
                 secondarySelection={secondarySelection}
+                yearSelection={yearSelection}
                 onPrimaryChange={handlePrimaryChange}
                 onSecondaryChange={handleSecondaryChange}
+                onYearChange={setYearSelection}
               />
             </div>
           ) : (

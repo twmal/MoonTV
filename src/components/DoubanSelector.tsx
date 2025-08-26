@@ -13,16 +13,20 @@ interface DoubanSelectorProps {
   type: 'movie' | 'tv' | 'show';
   primarySelection?: string;
   secondarySelection?: string;
+  yearSelection?: string;
   onPrimaryChange: (value: string) => void;
   onSecondaryChange: (value: string) => void;
+  onYearChange: (value: string) => void;
 }
 
 const DoubanSelector: React.FC<DoubanSelectorProps> = ({
   type,
   primarySelection,
   secondarySelection,
+  yearSelection,
   onPrimaryChange,
   onSecondaryChange,
+  onYearChange,
 }) => {
   // 为不同的选择器创建独立的refs和状态
   const primaryContainerRef = useRef<HTMLDivElement>(null);
@@ -287,39 +291,91 @@ const DoubanSelector: React.FC<DoubanSelectorProps> = ({
               )}
             </div>
           </div>
+
+          {/* 年份搜尋 */}
+          <div className='flex flex-col sm:flex-row sm:items-center gap-2'>
+            <span className='text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 min-w-[48px]'>
+              年份
+            </span>
+            <div className='flex-1'>
+              <input
+                type='text'
+                placeholder='輸入年份，如：2023'
+                value={yearSelection || ''}
+                onChange={(e) => onYearChange(e.target.value)}
+                className='w-full sm:w-48 px-3 py-2 text-xs sm:text-sm bg-gray-200/60 dark:bg-gray-700/60 border border-gray-300/30 dark:border-gray-600/30 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-200 backdrop-blur-sm'
+              />
+            </div>
+          </div>
         </div>
       )}
 
       {/* 电视剧类型 - 只显示一级选择器 */}
       {type === 'tv' && (
-        <div className='flex flex-col sm:flex-row sm:items-center gap-2'>
-          <span className='text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 min-w-[48px]'>
-            类型
-          </span>
-          <div className='overflow-x-auto'>
-            {renderCapsuleSelector(
-              tvOptions,
-              secondarySelection || tvOptions[0].value,
-              onSecondaryChange,
-              false
-            )}
+        <div className='space-y-3 sm:space-y-4'>
+          <div className='flex flex-col sm:flex-row sm:items-center gap-2'>
+            <span className='text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 min-w-[48px]'>
+              类型
+            </span>
+            <div className='overflow-x-auto'>
+              {renderCapsuleSelector(
+                tvOptions,
+                secondarySelection || tvOptions[0].value,
+                onSecondaryChange,
+                false
+              )}
+            </div>
+          </div>
+
+          {/* 年份搜尋 */}
+          <div className='flex flex-col sm:flex-row sm:items-center gap-2'>
+            <span className='text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 min-w-[48px]'>
+              年份
+            </span>
+            <div className='flex-1'>
+              <input
+                type='text'
+                placeholder='輸入年份，如：2023'
+                value={yearSelection || ''}
+                onChange={(e) => onYearChange(e.target.value)}
+                className='w-full sm:w-48 px-3 py-2 text-xs sm:text-sm bg-gray-200/60 dark:bg-gray-700/60 border border-gray-300/30 dark:border-gray-600/30 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-200 backdrop-blur-sm'
+              />
+            </div>
           </div>
         </div>
       )}
 
       {/* 综艺类型 - 只显示一级选择器 */}
       {type === 'show' && (
-        <div className='flex flex-col sm:flex-row sm:items-center gap-2'>
-          <span className='text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 min-w-[48px]'>
-            类型
-          </span>
-          <div className='overflow-x-auto'>
-            {renderCapsuleSelector(
-              showOptions,
-              secondarySelection || showOptions[0].value,
-              onSecondaryChange,
-              false
-            )}
+        <div className='space-y-3 sm:space-y-4'>
+          <div className='flex flex-col sm:flex-row sm:items-center gap-2'>
+            <span className='text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 min-w-[48px]'>
+              类型
+            </span>
+            <div className='overflow-x-auto'>
+              {renderCapsuleSelector(
+                showOptions,
+                secondarySelection || showOptions[0].value,
+                onSecondaryChange,
+                false
+              )}
+            </div>
+          </div>
+
+          {/* 年份搜尋 */}
+          <div className='flex flex-col sm:flex-row sm:items-center gap-2'>
+            <span className='text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 min-w-[48px]'>
+              年份
+            </span>
+            <div className='flex-1'>
+              <input
+                type='text'
+                placeholder='輸入年份，如：2023'
+                value={yearSelection || ''}
+                onChange={(e) => onYearChange(e.target.value)}
+                className='w-full sm:w-48 px-3 py-2 text-xs sm:text-sm bg-gray-200/60 dark:bg-gray-700/60 border border-gray-300/30 dark:border-gray-600/30 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-200 backdrop-blur-sm'
+              />
+            </div>
           </div>
         </div>
       )}

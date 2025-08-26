@@ -7,6 +7,7 @@ interface DoubanCategoriesParams {
   type: string;
   pageLimit?: number;
   pageStart?: number;
+  year?: string;
 }
 
 interface DoubanCategoryApiResponse {
@@ -74,7 +75,7 @@ export function shouldUseDoubanClient(): boolean {
 export async function fetchDoubanCategories(
   params: DoubanCategoriesParams
 ): Promise<DoubanResult> {
-  const { kind, category, type, pageLimit = 20, pageStart = 0 } = params;
+  const { kind, category, type, pageLimit = 20, pageStart = 0, year } = params;
 
   // 验证参数
   if (!['tv', 'movie'].includes(kind)) {
@@ -93,7 +94,12 @@ export async function fetchDoubanCategories(
     throw new Error('pageStart 不能小于 0');
   }
 
-  const target = `https://m.douban.com/rexxar/api/v2/subject/recent_hot/${kind}?start=${pageStart}&limit=${pageLimit}&category=${category}&type=${type}`;
+  let target = `https://m.douban.com/rexxar/api/v2/subject/recent_hot/${kind}?start=${pageStart}&limit=${pageLimit}&category=${category}&type=${type}`;
+  
+  // 如果有年份參數，添加到URL中
+  if (year) {
+    target += `&year=${year}`;
+  }
 
   try {
     const response = await fetchWithTimeout(target);
@@ -142,10 +148,15 @@ export async function getDoubanCategories(
     return fetchDoubanCategories(params);
   } else {
     // 使用服务端 API（当没有设置代理 URL 时）
-    const { kind, category, type, pageLimit = 20, pageStart = 0 } = params;
-    const response = await fetch(
-      `/api/douban/categories?kind=${kind}&category=${category}&type=${type}&limit=${pageLimit}&start=${pageStart}`
-    );
+    const { kind, category, type, pageLimit = 20, pageStart = 0, year } = params;
+    let apiUrl = `/api/douban/categories?kind=${kind}&category=${category}&type=${type}&limit=${pageLimit}&start=${pageStart}`;
+    
+    // 如果有年份參數，添加到URL中
+    if (year) {
+      apiUrl += `&year=${year}`;
+    }
+    
+    const response = await fetch(apiUrl);
 
     if (!response.ok) {
       // 触发全局错误提示
