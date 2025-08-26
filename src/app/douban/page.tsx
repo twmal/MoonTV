@@ -151,6 +151,19 @@ function DoubanPageClient() {
     [type, primarySelection, secondarySelection, yearSelection]
   );
 
+  // 前端年份篩選函數
+  const filterByYear = useCallback((items: DoubanItem[], selectedYear: string) => {
+    if (!selectedYear) {
+      return items;
+    }
+    return items.filter(item => {
+      if (!item.year) return false;
+      // 處理年份格式，可能是 "2023" 或 "2023-01-01" 等格式
+      const itemYear = item.year.toString().substring(0, 4);
+      return itemYear === selectedYear;
+    });
+  }, []);
+
   // 防抖的数据加载函数
   const loadInitialData = useCallback(async () => {
     try {
@@ -175,12 +188,17 @@ function DoubanPageClient() {
           throw new Error('没有找到对应的分类');
         }
       } else {
-        data = await getDoubanCategories(getRequestParams(0));
+        // 移除年份參數，因為豆瓣API不支持
+        const params = getRequestParams(0);
+        const { year, ...paramsWithoutYear } = params;
+        data = await getDoubanCategories(paramsWithoutYear);
       }
 
       if (data.code === 200) {
-        setDoubanData(data.list);
-        setHasMore(data.list.length === 25);
+        // 在前端進行年份篩選
+        const filteredData = filterByYear(data.list, yearSelection);
+        setDoubanData(filteredData);
+        setHasMore(data.list.length === 25 && filteredData.length === data.list.length);
         setLoading(false);
       } else {
         throw new Error(data.message || '获取数据失败');
@@ -195,6 +213,7 @@ function DoubanPageClient() {
     yearSelection,
     getRequestParams,
     customCategories,
+    filterByYear,
   ]);
 
   // 只在选择器准备好后才加载数据
@@ -262,13 +281,16 @@ function DoubanPageClient() {
               throw new Error('没有找到对应的分类');
             }
           } else {
-            data = await getDoubanCategories(
-              getRequestParams(currentPage * 25)
-            );
+            // 移除年份參數，因為豆瓣API不支持
+            const params = getRequestParams(currentPage * 25);
+            const { year, ...paramsWithoutYear } = params;
+            data = await getDoubanCategories(paramsWithoutYear);
           }
 
           if (data.code === 200) {
-            setDoubanData((prev) => [...prev, ...data.list]);
+            // 在前端進行年份篩選
+            const filteredData = filterByYear(data.list, yearSelection);
+            setDoubanData((prev) => [...prev, ...filteredData]);
             setHasMore(data.list.length === 25);
           } else {
             throw new Error(data.message || '获取数据失败');
@@ -361,6 +383,17 @@ function DoubanPageClient() {
     [secondarySelection]
   );
 
+  const handleYearChange = useCallback(
+    (value: string) => {
+      // 只有当值真正改变时才设置loading状态
+      if (value !== yearSelection) {
+        setLoading(true);
+        setYearSelection(value);
+      }
+    },
+    [yearSelection]
+  );
+
   const getPageTitle = () => {
     // 根据 type 生成标题
     return type === 'movie'
@@ -412,7 +445,7 @@ function DoubanPageClient() {
                 yearSelection={yearSelection}
                 onPrimaryChange={handlePrimaryChange}
                 onSecondaryChange={handleSecondaryChange}
-                onYearChange={setYearSelection}
+                onYearChange={handleYearChange}
               />
             </div>
           ) : (
