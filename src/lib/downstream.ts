@@ -1,6 +1,7 @@
 import { API_CONFIG, ApiSite, getConfig } from '@/lib/config';
 import { SearchResult } from '@/lib/types';
 import { cleanHtmlTags } from '@/lib/utils';
+import { generateSearchVariants } from '@/lib/chinese-converter';
 
 interface ApiSearchItem {
   vod_id: string;
@@ -16,6 +17,35 @@ interface ApiSearchItem {
 }
 
 export async function searchFromApi(
+  apiSite: ApiSite,
+  query: string
+): Promise<SearchResult[]> {
+  try {
+    // 生成搜尋變體（包括繁體、簡體）
+    const searchVariants = generateSearchVariants(query);
+    const allResults = new Map<string, SearchResult>();
+    
+    // 對每個搜尋變體進行搜尋
+    for (const variant of searchVariants) {
+      const variantResults = await searchSingleVariant(apiSite, variant);
+      
+      // 將結果添加到總結果中，使用 id + source 作為唯一鍵避免重複
+      variantResults.forEach(result => {
+        const key = `${result.id}-${result.source}`;
+        if (!allResults.has(key)) {
+          allResults.set(key, result);
+        }
+      });
+    }
+    
+    return Array.from(allResults.values());
+  } catch (error) {
+    return [];
+  }
+}
+
+// 輔助函數：搜尋單個變體
+async function searchSingleVariant(
   apiSite: ApiSite,
   query: string
 ): Promise<SearchResult[]> {
@@ -137,7 +167,15 @@ export async function searchFromApi(
               // 使用正则表达式从 vod_play_url 提取 m3u8 链接
               if (item.vod_play_url) {
                 const m3u8Regex = /\$(https?:\/\/[^"'\s]+?\.m3u8)/g;
-                episodes = item.vod_play_url.match(m3u8Regex) || [];
+                // 先用 $$$ 分割
+                const vod_play_url_array = item.vod_play_url.split('$$$');
+                // 对每个分片做匹配，取匹配到最多的作为结果
+                vod_play_url_array.forEach((url: string) => {
+                  const matches = url.match(m3u8Regex) || [];
+                  if (matches.length > episodes.length) {
+                    episodes = matches;
+                  }
+                });
               }
 
               episodes = Array.from(new Set(episodes)).map((link: string) => {
