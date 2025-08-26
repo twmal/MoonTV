@@ -203,6 +203,51 @@ const DoubanSelector: React.FC<DoubanSelectorProps> = ({
     }
   }, [secondarySelection]);
 
+  // 生成年份選項（2000-2024）
+  const generateYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    
+    // 添加"全部"選項
+    years.push({ label: '全部', value: '' });
+    
+    // 從當前年份倒序到2000年
+    for (let year = currentYear; year >= 2000; year--) {
+      years.push({ label: year.toString(), value: year.toString() });
+    }
+    
+    return years;
+  };
+
+  // 渲染年份選擇器
+  const renderYearSelector = () => {
+    const yearOptions = generateYearOptions();
+    
+    return (
+      <div className='flex gap-2 pb-2'>
+        {yearOptions.map((option) => {
+          const isSelected = (yearSelection || '') === option.value;
+          return (
+            <button
+              key={option.value}
+              onClick={() => onYearChange(option.value)}
+              className={`
+                px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 whitespace-nowrap
+                ${
+                  isSelected
+                    ? 'bg-green-500/90 text-white shadow-md'
+                    : 'bg-gray-200/60 dark:bg-gray-700/60 text-gray-700 dark:text-gray-300 hover:bg-gray-300/60 dark:hover:bg-gray-600/60'
+                }
+              `}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
+
   // 渲染胶囊式选择器
   const renderCapsuleSelector = (
     options: SelectorOption[],
@@ -297,14 +342,8 @@ const DoubanSelector: React.FC<DoubanSelectorProps> = ({
             <span className='text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 min-w-[48px]'>
               年份
             </span>
-            <div className='flex-1'>
-              <input
-                type='text'
-                placeholder='輸入年份，如：2023'
-                value={yearSelection || ''}
-                onChange={(e) => onYearChange(e.target.value)}
-                className='w-full sm:w-48 px-3 py-2 text-xs sm:text-sm bg-gray-200/60 dark:bg-gray-700/60 border border-gray-300/30 dark:border-gray-600/30 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-200 backdrop-blur-sm'
-              />
+            <div className='overflow-x-auto'>
+              {renderYearSelector()}
             </div>
           </div>
         </div>
@@ -332,14 +371,8 @@ const DoubanSelector: React.FC<DoubanSelectorProps> = ({
             <span className='text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 min-w-[48px]'>
               年份
             </span>
-            <div className='flex-1'>
-              <input
-                type='text'
-                placeholder='輸入年份，如：2023'
-                value={yearSelection || ''}
-                onChange={(e) => onYearChange(e.target.value)}
-                className='w-full sm:w-48 px-3 py-2 text-xs sm:text-sm bg-gray-200/60 dark:bg-gray-700/60 border border-gray-300/30 dark:border-gray-600/30 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-200 backdrop-blur-sm'
-              />
+            <div className='overflow-x-auto'>
+              {renderYearSelector()}
             </div>
           </div>
         </div>
@@ -367,14 +400,8 @@ const DoubanSelector: React.FC<DoubanSelectorProps> = ({
             <span className='text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 min-w-[48px]'>
               年份
             </span>
-            <div className='flex-1'>
-              <input
-                type='text'
-                placeholder='輸入年份，如：2023'
-                value={yearSelection || ''}
-                onChange={(e) => onYearChange(e.target.value)}
-                className='w-full sm:w-48 px-3 py-2 text-xs sm:text-sm bg-gray-200/60 dark:bg-gray-700/60 border border-gray-300/30 dark:border-gray-600/30 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 transition-all duration-200 backdrop-blur-sm'
-              />
+            <div className='overflow-x-auto'>
+              {renderYearSelector()}
             </div>
           </div>
         </div>

@@ -287,7 +287,9 @@ function DoubanPageClient() {
     type,
     primarySelection,
     secondarySelection,
+    yearSelection,
     customCategories,
+    getRequestParams,
   ]);
 
   // 设置滚动监听
